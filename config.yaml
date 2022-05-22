@@ -1,0 +1,16 @@
+check_interval: 1m
+domains:
+  - your.domain.goes.here
+  - another.domain.can.go.here
+dns:
+  provider: cloudflare
+  username: 
+  password: 
+  opt1: null
+  opt2: null
+v4:
+  enabled: true
+  check_url: http://ip1.dynupdate.no-ip.com/
+v6:
+  enabled: true
+  check_url: http://ip1.dynupdate6.no-ip.com/
