@@ -38,6 +38,10 @@ Place the plugin in a plugins folder in the same directory as your binary
 
 Place your configuration file (`config.yaml`) in the same directory as the binary or use the `-config` flag to specify its location
 
+## Plugin information
+
+* [Cloudflare](https://github.com/zmiguel/DynGoDNS/tree/main/cmd/plugins/cloudflare)
+
 ## Contributing
 
 There's a plugin template in the `cmd/plugin` folder.
