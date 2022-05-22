@@ -40,7 +40,7 @@ Place your configuration file (`config.yaml`) in the same directory as the binar
 
 ## Contributing
 
-There's a plugin template in the `plugin` folder.
+There's a plugin template in the `cmd/plugin` folder.
 the plugin **MUST** be named after the provider it's for and must return the same values as expected. the configuration file has 2 optional parameter in case your provider needs them.
 
 Please check the included Cloudflare plugin for a more in depth example.
