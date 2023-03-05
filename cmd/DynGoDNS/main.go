@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 	"plugin"
-	"strings"
 	"time"
 
 	"github.com/go-co-op/gocron"
@@ -33,7 +32,10 @@ func main() {
 	configurator.ReadConfig(&config, cfg_file)
 	mainLogger.Printf("Detected DNS provider: %s", config.DNS.Provider)
 	mainLogger.Print("Attempting to load plugin...")
-	wd := "./" + strings.Split(os.Args[0], "/")[1]
+        wd, wderr := os.Getwd()
+        if wderr != nil {
+                mainLogger.Fatal(wderr)
+        }
 	p, err := plugin.Open(wd + "/plugins/" + config.DNS.Provider + ".so")
 	if err != nil {
 		mainLogger.Fatal(err)
