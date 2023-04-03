@@ -1,17 +1,17 @@
 BINARY_NAME=DynGoDNS
 
 build: cloudflare.so
-	GOARCH=amd64 GOOS=darwin go build -o build/${BINARY_NAME}-mac-intel ./cmd/DynGoDNS/main.go
-	GOARCH=arm64 GOOS=darwin go build -o build/${BINARY_NAME}-mac-apple ./cmd/DynGoDNS/main.go
-	GOARCH=amd64 GOOS=linux go build -o build/${BINARY_NAME}-linux ./cmd/DynGoDNS/main.go
+	CGO_ENABLED=1 GOARCH=amd64 GOOS=darwin go build -o build/${BINARY_NAME}-mac-intel ./cmd/DynGoDNS/main.go
+	CGO_ENABLED=1 GOARCH=arm64 GOOS=darwin go build -o build/${BINARY_NAME}-mac-apple ./cmd/DynGoDNS/main.go
+	CGO_ENABLED=1 GOARCH=amd64 GOOS=linux go build -o build/${BINARY_NAME}-linux ./cmd/DynGoDNS/main.go
 
 run:
 	./build/${BINARY_NAME}
 
 cloudflare.so:
-	GOARCH=amd64 GOOS=darwin go build -buildmode=plugin -o build/plugins_mac_intel/cloudflare.so ./cmd/plugins/cloudflare/cloudflare.go
-	GOARCH=arm64 GOOS=darwin go build -buildmode=plugin -o build/plugins_mac_apple/cloudflare.so ./cmd/plugins/cloudflare/cloudflare.go
-	GOARCH=amd64 GOOS=linux go build -buildmode=plugin -o build/plugins_linux/cloudflare.so ./cmd/plugins/cloudflare/cloudflare.go
+	CGO_ENABLED=1 GOARCH=amd64 GOOS=darwin go build -buildmode=plugin -o build/plugins_mac_intel/cloudflare.so ./cmd/plugins/cloudflare/cloudflare.go
+	CGO_ENABLED=1 GOARCH=arm64 GOOS=darwin go build -buildmode=plugin -o build/plugins_mac_apple/cloudflare.so ./cmd/plugins/cloudflare/cloudflare.go
+	CGO_ENABLED=1 GOARCH=amd64 GOOS=linux go build -buildmode=plugin -o build/plugins_linux/cloudflare.so ./cmd/plugins/cloudflare/cloudflare.go
 
 bnr: build run
 
