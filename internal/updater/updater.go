@@ -33,6 +33,10 @@ func Update() {
 		if Config.V4.Enabled {
 			//Check current IP
 			currentIP := getCurrentIP(4)
+			if currentIP == "" {
+				upLogger.Printf("No IPv4 found, skipping...")
+				continue
+			}
 			// Get DNS IP
 			dnsIP, entryID := dns.GetV4.(func(string) (string, string))(domain)
 			//  Update DNS IP if needed
@@ -51,6 +55,10 @@ func Update() {
 		if Config.V6.Enabled {
 			//Check current IP
 			currentIP := getCurrentIP(6)
+			if currentIP == "" {
+				upLogger.Printf("No IPv4 found, skipping...")
+				continue
+			}
 			// Get DNS IP
 			dnsIP, entryID := dns.GetV6.(func(string) (string, string))(domain)
 			//  Update DNS IP if needed
@@ -78,15 +86,18 @@ func getCurrentIP(v int) string {
 		IPreq, err := http.NewRequest("GET", Config.V4.Check_url, nil)
 		if err != nil {
 			upLogger.Fatal(err)
+			return ""
 		}
 		resp, err := cli.Do(IPreq)
 		if err != nil {
 			upLogger.Fatal(err)
+			return ""
 		}
 		defer resp.Body.Close()
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			upLogger.Fatal(err)
+			return ""
 		}
 		upLogger.Printf("Current v4 IP: %s", string(body))
 		return string(body)
@@ -97,15 +108,18 @@ func getCurrentIP(v int) string {
 		IPreq, err := http.NewRequest("GET", Config.V6.Check_url, nil)
 		if err != nil {
 			upLogger.Fatal(err)
+			return ""
 		}
 		resp, err := cli.Do(IPreq)
 		if err != nil {
 			upLogger.Fatal(err)
+			return ""
 		}
 		defer resp.Body.Close()
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			upLogger.Fatal(err)
+			return ""
 		}
 		upLogger.Printf("Current v6 IP: %s", string(body))
 		return string(body)

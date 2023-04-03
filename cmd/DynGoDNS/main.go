@@ -29,13 +29,15 @@ func main() {
 
 	var config types.Config
 
+	mainLogger.Print("DynGoDNS v0.0.2")
+
 	configurator.ReadConfig(&config, cfg_file)
 	mainLogger.Printf("Detected DNS provider: %s", config.DNS.Provider)
 	mainLogger.Print("Attempting to load plugin...")
-        wd, wderr := os.Getwd()
-        if wderr != nil {
-                mainLogger.Fatal(wderr)
-        }
+	wd, wderr := os.Getwd()
+	if wderr != nil {
+		mainLogger.Fatal(wderr)
+	}
 	p, err := plugin.Open(wd + "/plugins/" + config.DNS.Provider + ".so")
 	if err != nil {
 		mainLogger.Fatal(err)
