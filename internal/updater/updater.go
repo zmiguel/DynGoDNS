@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/zmiguel/DynGoDNS/internal/types"
 )
@@ -28,6 +29,10 @@ func Update() {
 	}
 
 	for _, domain := range Config.Domains {
+		// get only first part of domain separated by commas
+		if strings.Contains(domain, ",") {
+			domain = strings.Split(domain, ",")[0]
+		}
 		upLogger.Print("----------")
 		upLogger.Printf("Checking domain: %s ...", domain)
 		if Config.V4.Enabled {
