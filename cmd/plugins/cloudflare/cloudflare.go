@@ -197,7 +197,7 @@ func UpdateV4(dom string, ip string, id string) {
 	// Update DNS record
 	domain := getDomain(dom)
 	cli := &http.Client{}
-	Addreq, err := http.NewRequest("PUT", api_endpoint+"/zones/"+domain.zone_id+"/dns_records/"+id, nil)
+	Addreq, err := http.NewRequest("PATCH", api_endpoint+"/zones/"+domain.zone_id+"/dns_records/"+id, nil)
 	if err != nil {
 		cloudLogger.Fatal(err)
 	}
@@ -333,7 +333,7 @@ func UpdateV6(dom string, ip string, id string) {
 	// Update DNS record
 	domain := getDomain(dom)
 	cli := &http.Client{}
-	Addreq, err := http.NewRequest("PUT", api_endpoint+"/zones/"+domain.zone_id+"/dns_records/"+id, nil)
+	Addreq, err := http.NewRequest("PATCH", api_endpoint+"/zones/"+domain.zone_id+"/dns_records/"+id, nil)
 	if err != nil {
 		cloudLogger.Fatal(err)
 	}
