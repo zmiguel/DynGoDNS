@@ -51,7 +51,7 @@ func Update() {
 				dns.CreateV4.(func(string, string))(domain, currentIP)
 			} else if currentIP != dnsIP {
 				// Update DNS
-				upLogger.Printf("Updating DNS record for %s ...", domain)
+				upLogger.Printf("Updating DNS record for %s (%s)...", domain, entryID)
 				dns.UpdateV4.(func(string, string, string))(domain, currentIP, entryID)
 			} else {
 				upLogger.Printf("No need to update DNS v4 record for %s", domain)
@@ -73,7 +73,7 @@ func Update() {
 				dns.CreateV6.(func(string, string))(domain, currentIP)
 			} else if currentIP != dnsIP {
 				// Update DNS
-				upLogger.Printf("Updating DNS record for %s ...", domain)
+				upLogger.Printf("Updating DNS record for %s (%s)...", domain, entryID)
 				dns.UpdateV6.(func(string, string, string))(domain, currentIP, entryID)
 			} else {
 				// No need to update DNS record for domain
