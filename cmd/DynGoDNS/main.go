@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/go-co-op/gocron"
+
 	"github.com/zmiguel/DynGoDNS/internal/configurator"
 	"github.com/zmiguel/DynGoDNS/internal/types"
 	"github.com/zmiguel/DynGoDNS/internal/updater"

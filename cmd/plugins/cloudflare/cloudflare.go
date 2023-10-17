@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -20,7 +21,7 @@ var (
 )
 
 func Info() string {
-	return "Cloudflare v0.0.1"
+	return "Cloudflare v0.0.2"
 }
 
 func Initialise() {
@@ -32,7 +33,18 @@ func Initialise() {
 func getDomainsData() {
 	for _, domain := range Config.Domains {
 		var data domains
-		data.domain = domain
+		// check if domain contains a comma
+		if strings.Contains(domain, ",") {
+			domain = strings.Split(domain, ",")[0]
+			if strings.Split(domain, ",")[1] == "proxy" {
+				data.proxy = true
+			} else {
+				data.proxy = false
+			}
+		} else {
+			data.domain = domain
+			data.proxy = false
+		}
 		data.zone = strings.Split(domain, ".")[len(strings.Split(domain, "."))-2] + "." + strings.Split(domain, ".")[len(strings.Split(domain, "."))-1]
 
 		cli := &http.Client{}
@@ -152,7 +164,7 @@ func CreateV4(dom string, ip string) {
 		}
 	}
 
-	Addreq.Body = ioutil.NopCloser(strings.NewReader(`{"type":"A","name":"` + domain.domain + `","content":"` + ip + `","ttl":1,"proxied":false}`))
+	Addreq.Body = ioutil.NopCloser(strings.NewReader(`{"type":"A","name":"` + domain.domain + `","content":"` + ip + `","ttl":1,"proxied":` + strconv.FormatBool(domain.proxy) + `}`))
 
 	cloudLogger.Printf("Setting domain: %s to %s", domain.domain, ip)
 
@@ -197,7 +209,7 @@ func UpdateV4(dom string, ip string, id string) {
 		}
 	}
 
-	Addreq.Body = ioutil.NopCloser(strings.NewReader(`{"type":"A","name":"` + domain.domain + `","content":"` + ip + `","ttl":1,"proxied":false}`))
+	Addreq.Body = ioutil.NopCloser(strings.NewReader(`{"type":"A","name":"` + domain.domain + `","content":"` + ip + `","ttl":1,"proxied":` + strconv.FormatBool(domain.proxy) + `}`))
 
 	cloudLogger.Printf("Setting domain: %s to %s", domain.domain, ip)
 
@@ -285,7 +297,7 @@ func CreateV6(dom string, ip string) {
 		}
 	}
 
-	Addreq.Body = ioutil.NopCloser(strings.NewReader(`{"type":"AAAA","name":"` + domain.domain + `","content":"` + ip + `","ttl":1,"proxied":false}`))
+	Addreq.Body = ioutil.NopCloser(strings.NewReader(`{"type":"AAAA","name":"` + domain.domain + `","content":"` + ip + `","ttl":1,"proxied":` + strconv.FormatBool(domain.proxy) + `}`))
 
 	cloudLogger.Printf("Setting domain: %s to %s", domain.domain, ip)
 
@@ -329,7 +341,7 @@ func UpdateV6(dom string, ip string, id string) {
 		}
 	}
 
-	Addreq.Body = ioutil.NopCloser(strings.NewReader(`{"type":"AAAA","name":"` + domain.domain + `","content":"` + ip + `","ttl":1,"proxied":false}`))
+	Addreq.Body = ioutil.NopCloser(strings.NewReader(`{"type":"AAAA","name":"` + domain.domain + `","content":"` + ip + `","ttl":1,"proxied":` + strconv.FormatBool(domain.proxy) + `}`))
 
 	cloudLogger.Printf("Setting domain: %s to %s", domain.domain, ip)
 
@@ -356,6 +368,7 @@ type domains struct {
 	domain  string
 	zone    string
 	zone_id string
+	proxy   bool
 }
 
 type zones struct {
