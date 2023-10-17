@@ -61,7 +61,7 @@ func Update() {
 			//Check current IP
 			currentIP := getCurrentIP(6)
 			if currentIP == "" {
-				upLogger.Printf("No IPv4 found, skipping...")
+				upLogger.Printf("No IPv6 found, skipping...")
 				continue
 			}
 			// Get DNS IP

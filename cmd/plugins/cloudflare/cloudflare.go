@@ -138,7 +138,7 @@ func GetV4(dom string) (string, string) {
 	DNSip := ""
 	if result.Success && len(result.Result) > 0 && result.Result[0].Name == dom {
 		DNSip = result.Result[0].Content
-		cloudLogger.Printf("Current v4 DNS: %s (%t)", DNSip, result.Result[0].Proxied)
+		cloudLogger.Printf("Current v4 DNS: %s (Proxy: %t)", DNSip, result.Result[0].Proxied)
 		if result.Result[0].Proxied != domain.proxy {
 			cloudLogger.Printf("Proxy status mismatch! Expected: %t, Got: %t", domain.proxy, result.Result[0].Proxied)
 			return "-1", ""
@@ -171,7 +171,7 @@ func CreateV4(dom string, ip string) {
 
 	Addreq.Body = ioutil.NopCloser(strings.NewReader(`{"type":"A","name":"` + domain.domain + `","content":"` + ip + `","ttl":1,"proxied":` + strconv.FormatBool(domain.proxy) + `}`))
 
-	cloudLogger.Printf("Setting domain: %s to %s", domain.domain, ip)
+	cloudLogger.Printf("Setting domain: %s to %s proxy: %t", domain.domain, ip, domain.proxy)
 
 	resp, err := cli.Do(Addreq)
 	if err != nil {
@@ -216,7 +216,7 @@ func UpdateV4(dom string, ip string, id string) {
 
 	Addreq.Body = ioutil.NopCloser(strings.NewReader(`{"type":"A","name":"` + domain.domain + `","content":"` + ip + `","ttl":1,"proxied":` + strconv.FormatBool(domain.proxy) + `}`))
 
-	cloudLogger.Printf("Setting domain: %s to %s", domain.domain, ip)
+	cloudLogger.Printf("Setting domain: %s to %s proxy: %t", domain.domain, ip, domain.proxy)
 
 	resp, err := cli.Do(Addreq)
 	if err != nil {
@@ -275,7 +275,7 @@ func GetV6(dom string) (string, string) {
 	DNSip := ""
 	if result.Success && len(result.Result) > 0 && result.Result[0].Name == dom {
 		DNSip = result.Result[0].Content
-		cloudLogger.Printf("Current v4 DNS: %s (%t)", DNSip, result.Result[0].Proxied)
+		cloudLogger.Printf("Current v6 DNS: %s (Proxy: %t)", DNSip, result.Result[0].Proxied)
 		if result.Result[0].Proxied != domain.proxy {
 			cloudLogger.Printf("Proxy status mismatch! Expected: %t, Got: %t", domain.proxy, result.Result[0].Proxied)
 			return "-1", ""
@@ -308,7 +308,7 @@ func CreateV6(dom string, ip string) {
 
 	Addreq.Body = ioutil.NopCloser(strings.NewReader(`{"type":"AAAA","name":"` + domain.domain + `","content":"` + ip + `","ttl":1,"proxied":` + strconv.FormatBool(domain.proxy) + `}`))
 
-	cloudLogger.Printf("Setting domain: %s to %s", domain.domain, ip)
+	cloudLogger.Printf("Setting domain: %s to %s proxy: %t", domain.domain, ip, domain.proxy)
 
 	resp, err := cli.Do(Addreq)
 	if err != nil {
@@ -352,7 +352,7 @@ func UpdateV6(dom string, ip string, id string) {
 
 	Addreq.Body = ioutil.NopCloser(strings.NewReader(`{"type":"AAAA","name":"` + domain.domain + `","content":"` + ip + `","ttl":1,"proxied":` + strconv.FormatBool(domain.proxy) + `}`))
 
-	cloudLogger.Printf("Setting domain: %s to %s", domain.domain, ip)
+	cloudLogger.Printf("Setting domain: %s to %s proxy: %t", domain.domain, ip, domain.proxy)
 
 	resp, err := cli.Do(Addreq)
 	if err != nil {
