@@ -35,12 +35,13 @@ func getDomainsData() {
 		var data domains
 		// check if domain contains a comma
 		if strings.Contains(domain, ",") {
-			domain = strings.Split(domain, ",")[0]
+			var domain_clean string = strings.Split(domain, ",")[0]
 			if len(strings.Split(domain, ",")) > 1 && strings.Split(domain, ",")[1] == "proxy" {
 				data.proxy = true
 			} else {
 				data.proxy = false
 			}
+			data.domain = domain_clean
 		} else {
 			data.domain = domain
 			data.proxy = false
