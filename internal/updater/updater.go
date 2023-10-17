@@ -43,18 +43,23 @@ func Update() {
 				continue
 			}
 			// Get DNS IP
-			dnsIP, entryID := dns.GetV4.(func(string) (string, string))(domain)
+			force, dnsIP, entryID := dns.GetV4.(func(string) (bool, string, string))(domain)
 			//  Update DNS IP if needed
-			if dnsIP == "" {
-				// Create DNS
-				upLogger.Printf("No DNS record found for %s, creating...", domain)
-				dns.CreateV4.(func(string, string))(domain, currentIP)
-			} else if currentIP != dnsIP {
-				// Update DNS
-				upLogger.Printf("Updating DNS record for %s (%s)...", domain, entryID)
+			if force {
+				upLogger.Printf("Forcing update of DNS record for %s (%s)...", domain, entryID)
 				dns.UpdateV4.(func(string, string, string))(domain, currentIP, entryID)
 			} else {
-				upLogger.Printf("No need to update DNS v4 record for %s", domain)
+				if dnsIP == "" {
+					// Create DNS
+					upLogger.Printf("No DNS record found for %s, creating...", domain)
+					dns.CreateV4.(func(string, string))(domain, currentIP)
+				} else if currentIP != dnsIP {
+					// Update DNS
+					upLogger.Printf("Updating DNS record for %s (%s)...", domain, entryID)
+					dns.UpdateV4.(func(string, string, string))(domain, currentIP, entryID)
+				} else {
+					upLogger.Printf("No need to update DNS v4 record for %s", domain)
+				}
 			}
 		}
 		if Config.V6.Enabled {
@@ -65,19 +70,24 @@ func Update() {
 				continue
 			}
 			// Get DNS IP
-			dnsIP, entryID := dns.GetV6.(func(string) (string, string))(domain)
+			force, dnsIP, entryID := dns.GetV6.(func(string) (bool, string, string))(domain)
 			//  Update DNS IP if needed
-			if dnsIP == "" {
-				// Create DNS
-				upLogger.Printf("No DNS record found for %s, creating...", domain)
-				dns.CreateV6.(func(string, string))(domain, currentIP)
-			} else if currentIP != dnsIP {
-				// Update DNS
-				upLogger.Printf("Updating DNS record for %s (%s)...", domain, entryID)
+			if force {
+				upLogger.Printf("Forcing update of DNS record for %s (%s)...", domain, entryID)
 				dns.UpdateV6.(func(string, string, string))(domain, currentIP, entryID)
 			} else {
-				// No need to update DNS record for domain
-				upLogger.Printf("No need to update DNS v6 record for %s", domain)
+				if dnsIP == "" {
+					// Create DNS
+					upLogger.Printf("No DNS record found for %s, creating...", domain)
+					dns.CreateV6.(func(string, string))(domain, currentIP)
+				} else if currentIP != dnsIP {
+					// Update DNS
+					upLogger.Printf("Updating DNS record for %s (%s)...", domain, entryID)
+					dns.UpdateV6.(func(string, string, string))(domain, currentIP, entryID)
+				} else {
+					// No need to update DNS record for domain
+					upLogger.Printf("No need to update DNS v6 record for %s", domain)
+				}
 			}
 		}
 	}

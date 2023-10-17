@@ -21,10 +21,10 @@ func Initialise() {
 	//necessary init stuff here, called once at startup
 }
 
-func GetV4(dom string) (string, string) {
+func GetV4(dom string) (bool, string, string) {
 	// get current DNS records
 	templateLogger.Print("Getting current DNS records")
-	return "", ""
+	return false, "", ""
 }
 
 func CreateV4(dom string, ip string) {
@@ -37,10 +37,10 @@ func UpdateV4(dom string, ip string, id string) {
 	templateLogger.Printf("Updating DNS record for %s with ip %s", dom, ip)
 }
 
-func GetV6(dom string) (string, string) {
+func GetV6(dom string) (bool, string, string) {
 	// get current DNS records
 	templateLogger.Print("Getting current DNS records")
-	return "", ""
+	return false, "", ""
 }
 
 func CreateV6(dom string, ip string) {

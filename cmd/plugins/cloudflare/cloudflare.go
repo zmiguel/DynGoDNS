@@ -21,7 +21,7 @@ var (
 )
 
 func Info() string {
-	return "Cloudflare v0.0.2"
+	return "Cloudflare v0.0.3"
 }
 
 func Initialise() {
@@ -100,7 +100,7 @@ func getDomain(dom string) domains {
 	return domains{}
 }
 
-func GetV4(dom string) (string, string) {
+func GetV4(dom string) (bool, string, string) {
 	// get current DNS records
 	domain := getDomain(dom)
 	cli := &http.Client{}
@@ -141,11 +141,11 @@ func GetV4(dom string) (string, string) {
 		cloudLogger.Printf("Current v4 DNS: %s (Proxy: %t)", DNSip, result.Result[0].Proxied)
 		if result.Result[0].Proxied != domain.proxy {
 			cloudLogger.Printf("Proxy status mismatch! Expected: %t, Got: %t", domain.proxy, result.Result[0].Proxied)
-			return "-1", ""
+			return true, DNSip, result.Result[0].ID
 		}
-		return DNSip, result.Result[0].ID
+		return false, DNSip, result.Result[0].ID
 	}
-	return DNSip, ""
+	return false, DNSip, ""
 }
 
 func CreateV4(dom string, ip string) {
@@ -237,7 +237,7 @@ func UpdateV4(dom string, ip string, id string) {
 	}
 }
 
-func GetV6(dom string) (string, string) {
+func GetV6(dom string) (bool, string, string) {
 	// get current DNS records
 	domain := getDomain(dom)
 	cli := &http.Client{}
@@ -278,11 +278,11 @@ func GetV6(dom string) (string, string) {
 		cloudLogger.Printf("Current v6 DNS: %s (Proxy: %t)", DNSip, result.Result[0].Proxied)
 		if result.Result[0].Proxied != domain.proxy {
 			cloudLogger.Printf("Proxy status mismatch! Expected: %t, Got: %t", domain.proxy, result.Result[0].Proxied)
-			return "-1", ""
+			return true, DNSip, result.Result[0].ID
 		}
-		return DNSip, result.Result[0].ID
+		return false, DNSip, result.Result[0].ID
 	}
-	return DNSip, ""
+	return false, DNSip, ""
 }
 
 func CreateV6(dom string, ip string) {
