@@ -138,7 +138,11 @@ func GetV4(dom string) (string, string) {
 	DNSip := ""
 	if result.Success && len(result.Result) > 0 && result.Result[0].Name == dom {
 		DNSip = result.Result[0].Content
-		cloudLogger.Printf("Current v4 DNS: %s", DNSip)
+		cloudLogger.Printf("Current v4 DNS: %s (%t)", DNSip, result.Result[0].Proxied)
+		if result.Result[0].Proxied != domain.proxy {
+			cloudLogger.Printf("Proxy status mismatch! Expected: %t, Got: %t", domain.proxy, result.Result[0].Proxied)
+			return "-1", ""
+		}
 		return DNSip, result.Result[0].ID
 	}
 	return DNSip, ""
@@ -271,7 +275,11 @@ func GetV6(dom string) (string, string) {
 	DNSip := ""
 	if result.Success && len(result.Result) > 0 && result.Result[0].Name == dom {
 		DNSip = result.Result[0].Content
-		cloudLogger.Printf("Current v6 DNS: %s", DNSip)
+		cloudLogger.Printf("Current v4 DNS: %s (%t)", DNSip, result.Result[0].Proxied)
+		if result.Result[0].Proxied != domain.proxy {
+			cloudLogger.Printf("Proxy status mismatch! Expected: %t, Got: %t", domain.proxy, result.Result[0].Proxied)
+			return "-1", ""
+		}
 		return DNSip, result.Result[0].ID
 	}
 	return DNSip, ""
