@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -21,7 +21,7 @@ var (
 )
 
 func Info() string {
-	return "Cloudflare v0.0.3"
+	return "Cloudflare v1.0.0"
 }
 
 func Initialise() {
@@ -72,7 +72,7 @@ func getDomainsData() {
 		}
 
 		defer resp.Body.Close()
-		body, err := ioutil.ReadAll(resp.Body)
+		body, err := io.ReadAll(resp.Body)
 		if err != nil {
 			cloudLogger.Fatal(err)
 		}
@@ -127,7 +127,7 @@ func GetV4(dom string) (bool, string, string) {
 	}
 
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		cloudLogger.Fatal(err)
 	}
@@ -169,7 +169,7 @@ func CreateV4(dom string, ip string) {
 		}
 	}
 
-	Addreq.Body = ioutil.NopCloser(strings.NewReader(`{"type":"A","name":"` + domain.domain + `","content":"` + ip + `","ttl":1,"proxied":` + strconv.FormatBool(domain.proxy) + `}`))
+	Addreq.Body = io.NopCloser(strings.NewReader(`{"type":"A","name":"` + domain.domain + `","content":"` + ip + `","ttl":1,"proxied":` + strconv.FormatBool(domain.proxy) + `}`))
 
 	cloudLogger.Printf("Setting domain: %s to %s proxy: %t", domain.domain, ip, domain.proxy)
 
@@ -179,7 +179,7 @@ func CreateV4(dom string, ip string) {
 	}
 
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 
 	if err != nil {
 		cloudLogger.Fatal(err)
@@ -214,7 +214,7 @@ func UpdateV4(dom string, ip string, id string) {
 		}
 	}
 
-	Addreq.Body = ioutil.NopCloser(strings.NewReader(`{"type":"A","name":"` + domain.domain + `","content":"` + ip + `","ttl":1,"proxied":` + strconv.FormatBool(domain.proxy) + `}`))
+	Addreq.Body = io.NopCloser(strings.NewReader(`{"type":"A","name":"` + domain.domain + `","content":"` + ip + `","ttl":1,"proxied":` + strconv.FormatBool(domain.proxy) + `}`))
 
 	cloudLogger.Printf("Setting domain: %s to %s proxy: %t", domain.domain, ip, domain.proxy)
 
@@ -224,7 +224,7 @@ func UpdateV4(dom string, ip string, id string) {
 	}
 
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		cloudLogger.Fatal(err)
 	}
@@ -264,7 +264,7 @@ func GetV6(dom string) (bool, string, string) {
 	}
 
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		cloudLogger.Fatal(err)
 	}
@@ -306,7 +306,7 @@ func CreateV6(dom string, ip string) {
 		}
 	}
 
-	Addreq.Body = ioutil.NopCloser(strings.NewReader(`{"type":"AAAA","name":"` + domain.domain + `","content":"` + ip + `","ttl":1,"proxied":` + strconv.FormatBool(domain.proxy) + `}`))
+	Addreq.Body = io.NopCloser(strings.NewReader(`{"type":"AAAA","name":"` + domain.domain + `","content":"` + ip + `","ttl":1,"proxied":` + strconv.FormatBool(domain.proxy) + `}`))
 
 	cloudLogger.Printf("Setting domain: %s to %s proxy: %t", domain.domain, ip, domain.proxy)
 
@@ -316,7 +316,7 @@ func CreateV6(dom string, ip string) {
 	}
 
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		cloudLogger.Fatal(err)
 	}
@@ -350,7 +350,7 @@ func UpdateV6(dom string, ip string, id string) {
 		}
 	}
 
-	Addreq.Body = ioutil.NopCloser(strings.NewReader(`{"type":"AAAA","name":"` + domain.domain + `","content":"` + ip + `","ttl":1,"proxied":` + strconv.FormatBool(domain.proxy) + `}`))
+	Addreq.Body = io.NopCloser(strings.NewReader(`{"type":"AAAA","name":"` + domain.domain + `","content":"` + ip + `","ttl":1,"proxied":` + strconv.FormatBool(domain.proxy) + `}`))
 
 	cloudLogger.Printf("Setting domain: %s to %s proxy: %t", domain.domain, ip, domain.proxy)
 
@@ -360,7 +360,7 @@ func UpdateV6(dom string, ip string, id string) {
 	}
 
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		cloudLogger.Fatal(err)
 	}

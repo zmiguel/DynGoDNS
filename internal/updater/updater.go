@@ -1,12 +1,13 @@
 package updater
 
 import (
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"os"
 	"strings"
 
+	"github.com/zmiguel/DynGoDNS/internal/connectivity"
 	"github.com/zmiguel/DynGoDNS/internal/types"
 )
 
@@ -28,6 +29,9 @@ func Update() {
 		init_done = true
 	}
 
+	// Check for IPv4 and IPv6 connectivity
+	v4, v6 := connectivity.Check()
+
 	for _, domain := range Config.Domains {
 		// get only first part of domain separated by commas
 		if strings.Contains(domain, ",") {
@@ -36,6 +40,10 @@ func Update() {
 		upLogger.Print("----------")
 		upLogger.Printf("Checking domain: %s ...", domain)
 		if Config.V4.Enabled {
+			if !v4 {
+				upLogger.Print("No IPv4 connectivity, skipping...")
+				continue
+			}
 			//Check current IP
 			currentIP := getCurrentIP(4)
 			if currentIP == "" {
@@ -63,6 +71,10 @@ func Update() {
 			}
 		}
 		if Config.V6.Enabled {
+			if !v6 {
+				upLogger.Print("No IPv6 connectivity, skipping...")
+				continue
+			}
 			//Check current IP
 			currentIP := getCurrentIP(6)
 			if currentIP == "" {
@@ -109,7 +121,7 @@ func getCurrentIP(v int) string {
 			return ""
 		}
 		defer resp.Body.Close()
-		body, err := ioutil.ReadAll(resp.Body)
+		body, err := io.ReadAll(resp.Body)
 		if err != nil {
 			upLogger.Fatal(err)
 			return ""
@@ -131,7 +143,7 @@ func getCurrentIP(v int) string {
 			return ""
 		}
 		defer resp.Body.Close()
-		body, err := ioutil.ReadAll(resp.Body)
+		body, err := io.ReadAll(resp.Body)
 		if err != nil {
 			upLogger.Fatal(err)
 			return ""
