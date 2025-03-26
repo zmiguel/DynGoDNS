@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+    "time"
 
 	"github.com/zmiguel/DynGoDNS/internal/connectivity"
 	"github.com/zmiguel/DynGoDNS/internal/types"
@@ -122,7 +123,9 @@ func getCurrentIP(v int) string {
     }
 
     //Check current IP
-    cli := &http.Client{}
+    cli := &http.Client{
+        Timeout: 5 * time.Second,
+    }
     IPreq, err := http.NewRequest("GET", checkURL, nil)
     if err != nil {
         upLogger.Printf("Error creating request for %s IP check: %v", version, err)
