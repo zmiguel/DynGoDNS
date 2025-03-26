@@ -158,7 +158,7 @@ func getCurrentIP(v int) string {
 
     //Check current IP
     cli := &http.Client{
-        Timeout: timeout * time.Second,
+        Timeout: time.Duration(timeout) * time.Second,
     }
     IPreq, err := http.NewRequest("GET", checkURL, nil)
     if err != nil {
