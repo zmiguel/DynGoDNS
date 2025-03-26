@@ -81,11 +81,7 @@ func loadPluginFunctions(plug plugin.Plugin) {
 	if err != nil {
 		mainLogger.Fatal(err)
 	}
-	// Delete V4
-	dns.DeleteV4, err = plug.Lookup("DeleteV4")
-	if err != nil {
-		mainLogger.Fatal(err)
-	}
+
 	// Get V6
 	dns.GetV6, err = plug.Lookup("GetV6")
 	if err != nil {
@@ -108,6 +104,11 @@ func loadPluginFunctions(plug plugin.Plugin) {
 	}
 	// Create V6
 	dns.CreateV6, err = plug.Lookup("CreateV6")
+	if err != nil {
+		mainLogger.Fatal(err)
+	}
+	// Delete V4
+	dns.DeleteV4, err = plug.Lookup("DeleteV4")
 	if err != nil {
 		mainLogger.Fatal(err)
 	}
