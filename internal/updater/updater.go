@@ -107,49 +107,49 @@ func Update() {
 }
 
 func getCurrentIP(v int) string {
-	if v == 4 {
-		//Check current IP
-		cli := &http.Client{}
-		IPreq, err := http.NewRequest("GET", Config.V4.Check_url, nil)
-		if err != nil {
-			upLogger.Fatal(err)
-			return ""
-		}
-		resp, err := cli.Do(IPreq)
-		if err != nil {
-			upLogger.Fatal(err)
-			return ""
-		}
-		defer resp.Body.Close()
-		body, err := io.ReadAll(resp.Body)
-		if err != nil {
-			upLogger.Fatal(err)
-			return ""
-		}
-		upLogger.Printf("Current v4 IP: %s", string(body))
-		return string(body)
-	}
-	if v == 6 {
-		//Check current IP
-		cli := &http.Client{}
-		IPreq, err := http.NewRequest("GET", Config.V6.Check_url, nil)
-		if err != nil {
-			upLogger.Fatal(err)
-			return ""
-		}
-		resp, err := cli.Do(IPreq)
-		if err != nil {
-			upLogger.Fatal(err)
-			return ""
-		}
-		defer resp.Body.Close()
-		body, err := io.ReadAll(resp.Body)
-		if err != nil {
-			upLogger.Fatal(err)
-			return ""
-		}
-		upLogger.Printf("Current v6 IP: %s", string(body))
-		return string(body)
-	}
-	return ""
+    var checkURL string
+    var version string
+
+    if v == 4 {
+        checkURL = Config.V4.Check_url
+        version = "v4"
+    } else if v == 6 {
+        checkURL = Config.V6.Check_url
+        version = "v6"
+    } else {
+        upLogger.Printf("Invalid IP version requested: %d", v)
+        return ""
+    }
+
+    //Check current IP
+    cli := &http.Client{
+        Timeout: 10 * time.Second, // Add timeout to prevent hanging
+    }
+    IPreq, err := http.NewRequest("GET", checkURL, nil)
+    if err != nil {
+        upLogger.Printf("Error creating request for %s IP check: %v", version, err)
+        return ""
+    }
+
+    resp, err := cli.Do(IPreq)
+    if err != nil {
+        upLogger.Printf("Error getting %s IP: %v", version, err)
+        return ""
+    }
+    defer resp.Body.Close()
+
+    if resp.StatusCode != http.StatusOK {
+        upLogger.Printf("%s IP check returned non-OK status: %d", version, resp.StatusCode)
+        return ""
+    }
+
+    body, err := io.ReadAll(resp.Body)
+    if err != nil {
+        upLogger.Printf("Error reading %s IP response: %v", version, err)
+        return ""
+    }
+
+    ip := strings.TrimSpace(string(body))
+    upLogger.Printf("Current %s IP: %s", version, ip)
+    return ip
 }
