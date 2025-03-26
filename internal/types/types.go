@@ -14,11 +14,15 @@ type Config struct {
 	} `yaml:"dns"`
 	V4 struct {
 		Enabled   bool   `yaml:"enabled"`
+		Delete	  bool   `yaml:"delete"`
 		Check_url string `yaml:"check_url"`
+		Timeout   int    `yaml:"timeout"`
 	} `yaml:"v4"`
 	V6 struct {
 		Enabled   bool   `yaml:"enabled"`
+		Delete	  bool   `yaml:"delete"`
 		Check_url string `yaml:"check_url"`
+		Timeout   int    `yaml:"timeout"`
 	} `yaml:"v6"`
 }
 
@@ -32,4 +36,6 @@ type DNS struct {
 	UpdateV6   plugin.Symbol
 	CreateV4   plugin.Symbol
 	CreateV6   plugin.Symbol
+	DeleteV4   plugin.Symbol
+	DeleteV6   plugin.Symbol
 }

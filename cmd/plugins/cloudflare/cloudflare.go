@@ -21,7 +21,7 @@ var (
 )
 
 func Info() string {
-	return "Cloudflare v1.0.0"
+	return "Cloudflare v1.1.0"
 }
 
 func Initialise() {
@@ -237,6 +237,48 @@ func UpdateV4(dom string, ip string, id string) {
 	}
 }
 
+func DeleteV4(dom string, ip string, id string) {
+	// Update DNS record
+	domain := getDomain(dom)
+	cli := &http.Client{}
+	Addreq, err := http.NewRequest("DELETE", api_endpoint+"/zones/"+domain.zone_id+"/dns_records/"+id, nil)
+	if err != nil {
+		cloudLogger.Fatal(err)
+	}
+	if Config.DNS.Username != "" {
+		Addreq.Header = map[string][]string{
+			"X-Auth-Email": {Config.DNS.Username},
+			"X-Auth-Key":   {Config.DNS.Password},
+			"Content-Type": {"application/json"},
+		}
+	} else {
+		Addreq.Header = map[string][]string{
+			"X-Auth-User-Service-Key": {Config.DNS.Password},
+			"Content-Type":            {"application/json"},
+		}
+	}
+
+	cloudLogger.Printf("Deleting domain: %s", domain.domain)
+
+	resp, err := cli.Do(Addreq)
+	if err != nil {
+		cloudLogger.Fatal(err)
+	}
+
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		cloudLogger.Fatal(err)
+	}
+
+	var result modifyDNS
+	json.Unmarshal(body, &result)
+
+	if result.Success {
+		cloudLogger.Print("DNS record deleted")
+	}
+}
+
 func GetV6(dom string) (bool, string, string) {
 	// get current DNS records
 	domain := getDomain(dom)
@@ -370,6 +412,48 @@ func UpdateV6(dom string, ip string, id string) {
 
 	if result.Success && result.Result.Content == ip {
 		cloudLogger.Print("DNS record updated")
+	}
+}
+
+func DeleteV6(dom string, ip string, id string) {
+	// Update DNS record
+	domain := getDomain(dom)
+	cli := &http.Client{}
+	Addreq, err := http.NewRequest("DELETE", api_endpoint+"/zones/"+domain.zone_id+"/dns_records/"+id, nil)
+	if err != nil {
+		cloudLogger.Fatal(err)
+	}
+	if Config.DNS.Username != "" {
+		Addreq.Header = map[string][]string{
+			"X-Auth-Email": {Config.DNS.Username},
+			"X-Auth-Key":   {Config.DNS.Password},
+			"Content-Type": {"application/json"},
+		}
+	} else {
+		Addreq.Header = map[string][]string{
+			"X-Auth-User-Service-Key": {Config.DNS.Password},
+			"Content-Type":            {"application/json"},
+		}
+	}
+
+	cloudLogger.Printf("Deleting domain: %s", domain.domain)
+
+	resp, err := cli.Do(Addreq)
+	if err != nil {
+		cloudLogger.Fatal(err)
+	}
+
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		cloudLogger.Fatal(err)
+	}
+
+	var result modifyDNS
+	json.Unmarshal(body, &result)
+
+	if result.Success {
+		cloudLogger.Print("DNS record deleted")
 	}
 }
 

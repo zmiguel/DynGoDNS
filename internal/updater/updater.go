@@ -41,18 +41,34 @@ func Update() {
 		upLogger.Print("----------")
 		upLogger.Printf("Checking domain: %s ...", domain)
 		if Config.V4.Enabled {
-			if !v4 {
-				upLogger.Print("No IPv4 connectivity, skipping...")
-				continue
-			}
-			//Check current IP
-			currentIP := getCurrentIP(4)
-			if currentIP == "" {
-				upLogger.Printf("No IPv4 found, skipping...")
-				continue
-			}
+			haveV4 := true
 			// Get DNS IP
 			force, dnsIP, entryID := dns.GetV4.(func(string) (bool, string, string))(domain)
+			// Check if we have IPv4 connectivity
+			if !v4{
+				upLogger.Print("No IPv4 connectivity")
+				haveV4 = false
+			}
+			// Check current IP
+			currentIP := getCurrentIP(4)
+			if currentIP == "" {
+				upLogger.Printf("No IPv4 found")
+				haveV4 = false
+			}
+			if !haveV4{
+				if Config.V4.Delete {
+					if dnsIP == "" {
+						upLogger.Printf("No DNS record found for %s, skipping...", domain)
+						continue
+					}
+					// Delete DNS
+					upLogger.Printf("Deleting DNS record for %s (%s)...", domain, entryID)
+					dns.DeleteV4.(func(string, string, string))(domain, currentIP, entryID)
+					continue
+				}
+				upLogger.Printf("No IPv4 IP found, skipping... %s", domain)
+				continue
+			}
 			//  Update DNS IP if needed
 			if force {
 				upLogger.Printf("Forcing update of DNS record for %s (%s)...", domain, entryID)
@@ -72,18 +88,33 @@ func Update() {
 			}
 		}
 		if Config.V6.Enabled {
+			haveV6 := true
+			// Get DNS IP
+			force, dnsIP, entryID := dns.GetV6.(func(string) (bool, string, string))(domain)
 			if !v6 {
-				upLogger.Print("No IPv6 connectivity, skipping...")
-				continue
+				upLogger.Print("No IPv6 connectivity")
+				haveV6 = false
 			}
 			//Check current IP
 			currentIP := getCurrentIP(6)
 			if currentIP == "" {
-				upLogger.Printf("No IPv6 found, skipping...")
+				upLogger.Printf("No IPv6 found")
+				haveV6 = false
+			}
+			if !haveV6{
+				if Config.V6.Delete {
+					if dnsIP == "" {
+						upLogger.Printf("No DNS record found for %s, skipping...", domain)
+						continue
+					}
+					// Delete DNS
+					upLogger.Printf("Deleting DNS record for %s (%s)...", domain, entryID)
+					dns.DeleteV6.(func(string, string, string))(domain, currentIP, entryID)
+					continue
+				}
+				upLogger.Printf("No IPv6 IP found, skipping... %s", domain)
 				continue
 			}
-			// Get DNS IP
-			force, dnsIP, entryID := dns.GetV6.(func(string) (bool, string, string))(domain)
 			//  Update DNS IP if needed
 			if force {
 				upLogger.Printf("Forcing update of DNS record for %s (%s)...", domain, entryID)
@@ -110,13 +141,16 @@ func Update() {
 func getCurrentIP(v int) string {
     var checkURL string
     var version string
+	var timeout int
 
     if v == 4 {
         checkURL = Config.V4.Check_url
         version = "v4"
+		timeout = Config.V4.Timeout
     } else if v == 6 {
         checkURL = Config.V6.Check_url
         version = "v6"
+		timeout = Config.V6.Timeout
     } else {
         upLogger.Printf("Invalid IP version requested: %d", v)
         return ""
@@ -124,7 +158,7 @@ func getCurrentIP(v int) string {
 
     //Check current IP
     cli := &http.Client{
-        Timeout: 5 * time.Second,
+        Timeout: timeout * time.Second,
     }
     IPreq, err := http.NewRequest("GET", checkURL, nil)
     if err != nil {

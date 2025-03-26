@@ -30,7 +30,7 @@ func main() {
 
 	var config types.Config
 
-	mainLogger.Print("DynGoDNS v1.0.2")
+	mainLogger.Print("DynGoDNS v1.1.0")
 
 	configurator.ReadConfig(&config, cfg_file)
 	mainLogger.Printf("Detected DNS provider: %s", config.DNS.Provider)

@@ -18,16 +18,20 @@ domains:
     - third.domain.com
 dns:
     provider: cloudflare # must match plugin name
-    username: 
-    password: 
+    username:
+    password:
     opt1: null
     opt2: null
 v4:
     enabled: true
+    delete: true
     check_url: http://ip1.dynupdate.no-ip.com/
+    timeout: 5
 v6:
     enabled: true
+    delete: true
     check_url: http://ip1.dynupdate6.no-ip.com/
+    timeout: 5
 ```
 
 ## Installation
