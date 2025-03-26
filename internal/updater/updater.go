@@ -122,9 +122,7 @@ func getCurrentIP(v int) string {
     }
 
     //Check current IP
-    cli := &http.Client{
-        Timeout: 10 * time.Second, // Add timeout to prevent hanging
-    }
+    cli := &http.Client{}
     IPreq, err := http.NewRequest("GET", checkURL, nil)
     if err != nil {
         upLogger.Printf("Error creating request for %s IP check: %v", version, err)
